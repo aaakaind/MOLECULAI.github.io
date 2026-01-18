@@ -9,10 +9,18 @@ class MoleculAI {
         this.spinInterval = null;
         this.elementVisibility = {};
         this.currentStyle = 'stick';
-        this.useEmbeddedData = typeof CONFIG !== 'undefined' && CONFIG.USE_EMBEDDED_DATA;
-        this.enableAuth = typeof CONFIG !== 'undefined' && CONFIG.ENABLE_AUTH;
+        
+        // Configuration
+        const hasConfig = typeof CONFIG !== 'undefined';
+        this.useEmbeddedData = hasConfig && CONFIG.USE_EMBEDDED_DATA;
+        this.enableAuth = hasConfig && CONFIG.ENABLE_AUTH;
 
         this.init();
+    }
+    
+    // Helper method to check if embedded data mode is available
+    isEmbeddedModeAvailable() {
+        return this.useEmbeddedData && typeof MoleculesAPI !== 'undefined';
     }
 
     async init() {
@@ -196,7 +204,7 @@ class MoleculAI {
         try {
             let molecules;
             
-            if (this.useEmbeddedData && typeof MoleculesAPI !== 'undefined') {
+            if (this.isEmbeddedModeAvailable()) {
                 // Use embedded data for GitHub Pages
                 molecules = MoleculesAPI.getAllMolecules();
             } else {
@@ -224,7 +232,7 @@ class MoleculAI {
         try {
             let molecule;
             
-            if (this.useEmbeddedData && typeof MoleculesAPI !== 'undefined') {
+            if (this.isEmbeddedModeAvailable()) {
                 // Use embedded data for GitHub Pages
                 molecule = MoleculesAPI.getMolecule(id);
             } else {
@@ -269,7 +277,7 @@ class MoleculAI {
         try {
             let elements;
             
-            if (this.useEmbeddedData && typeof MoleculesAPI !== 'undefined') {
+            if (this.isEmbeddedModeAvailable()) {
                 // Use embedded data for GitHub Pages
                 elements = MoleculesAPI.getElementsInMolecule(moleculeId);
             } else {

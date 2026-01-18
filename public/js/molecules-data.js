@@ -141,6 +141,9 @@ const MoleculesAPI = {
   },
 
   searchMolecules(query) {
+    if (!query) {
+      return [];
+    }
     const lowerQuery = query.toLowerCase();
     return Object.values(MOLECULES_DATA)
       .filter(mol => 
