@@ -1,6 +1,14 @@
 # MOLECULAI
 Molecule and chemical reaction visualization tool with interactive 3D visualization, user authentication, and data served via MCP servers.
 
+[![Deploy to GitHub Pages](https://github.com/aaakaind/MOLECULAI.github.io/workflows/Deploy%20static%20content%20to%20Pages/badge.svg)](https://github.com/aaakaind/MOLECULAI.github.io/actions)
+
+## 🌐 Live Demo
+
+**GitHub Pages (Static Version):** [https://aaakaind.github.io/MOLECULAI.github.io/](https://aaakaind.github.io/MOLECULAI.github.io/)
+
+The static version includes all visualization features with embedded molecule data. Authentication features require the full-stack deployment.
+
 ## Features
 
 - 🧪 **Interactive 3D Molecular Visualization**: Visualize molecules in 3D using custom Canvas-based renderer
@@ -159,6 +167,55 @@ newMolecule: {
     // ... more bonds
   ]
 }
+```
+
+## Deployment
+
+### GitHub Pages (Static Deployment)
+
+This repository is configured to automatically deploy to GitHub Pages. The static version uses embedded molecule data and includes all visualization features.
+
+**How it works:**
+- The `.github/workflows/static.yml` workflow automatically deploys the `/public` directory to GitHub Pages on every push to `main`
+- The app detects the deployment mode via `config.js` and uses embedded molecule data instead of backend API calls
+- Authentication features are disabled in the static deployment
+
+**To enable GitHub Pages:**
+1. Go to your repository Settings → Pages
+2. Under "Build and deployment", select "GitHub Actions" as the source
+3. Push to the `main` branch to trigger the deployment
+4. Your site will be available at `https://<username>.github.io/<repository-name>/`
+
+### Full-Stack Deployment
+
+For the complete application with authentication and backend features:
+
+1. Deploy the backend to a Node.js hosting service (e.g., Render, Railway, Vercel)
+2. Set the `JWT_SECRET` environment variable
+3. Update `public/js/config.js`:
+   ```javascript
+   const CONFIG = {
+     USE_EMBEDDED_DATA: false,
+     API_BASE_URL: 'https://your-backend-url.com',
+     ENABLE_AUTH: true
+   };
+   ```
+
+### Configuration
+
+Edit `public/js/config.js` to customize the deployment:
+
+```javascript
+const CONFIG = {
+  // Use embedded data (true) or backend API (false)
+  USE_EMBEDDED_DATA: true,
+  
+  // Backend API URL (only used when USE_EMBEDDED_DATA is false)
+  API_BASE_URL: window.location.origin,
+  
+  // Enable authentication features (requires backend)
+  ENABLE_AUTH: false
+};
 ```
 
 ## License
