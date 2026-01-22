@@ -114,7 +114,6 @@ try {
       // bcryptjs and jsonwebtoken are required for Vercel serverless API functions
       // Express is used by server.js for local development but not deployed to Vercel
       const hasServerlessDepd = deps.bcryptjs && deps.jsonwebtoken;
-      const hasExpressForLocal = deps.express;
       return hasServerlessDepd; // Express is optional for Vercel deployment
     },
     'Install required dependencies: bcryptjs, jsonwebtoken'
