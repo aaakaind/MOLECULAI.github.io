@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { randomUUID } from 'crypto';
 
 // WARNING: In-memory storage is for DEMO purposes only
 // In serverless environments, data will NOT persist across function invocations
@@ -69,7 +70,7 @@ export default function handler(req, res) {
       }
 
       const visualization = {
-        id: Date.now().toString(),
+        id: randomUUID(), // Use crypto.randomUUID() for unique IDs
         username: user.username,
         name,
         moleculeId,

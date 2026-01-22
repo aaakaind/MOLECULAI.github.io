@@ -1,6 +1,14 @@
 /**
  * Configuration for MOLECULAI
  * This file determines whether to use backend API or embedded data
+ * 
+ * Platform Detection:
+ * - GitHub Pages: Uses static embedded data
+ * - Vercel/other: Uses full API backend
+ * 
+ * Note: Detection is runtime-based for maximum flexibility.
+ * For build-time configuration, set environment variables and
+ * generate this file during the build process.
  */
 
 const CONFIG = {
