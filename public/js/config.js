@@ -5,18 +5,28 @@
 
 const CONFIG = {
   // Set to true to use embedded molecule data (for GitHub Pages static deployment)
-  // Set to false to use backend API (for full-stack deployment)
-  USE_EMBEDDED_DATA: true,
+  // Set to false to use backend API (for full-stack deployment like Vercel)
+  USE_EMBEDDED_DATA: typeof window !== 'undefined' && window.location.hostname.includes('github.io'),
   
   // API base URL (only used when USE_EMBEDDED_DATA is false)
-  API_BASE_URL: window.location.origin,
+  // Automatically detects if running on Vercel or locally
+  API_BASE_URL: typeof window !== 'undefined' ? window.location.origin : '',
   
   // GitHub Pages base path (if deployed to a subdirectory)
   BASE_PATH: '',
   
   // Enable authentication features (requires backend)
-  ENABLE_AUTH: false
+  // Enabled for Vercel deployments, disabled for GitHub Pages
+  ENABLE_AUTH: typeof window !== 'undefined' && !window.location.hostname.includes('github.io')
 };
 
 // Expose configuration globally for other scripts to consume
-window.CONFIG = CONFIG;
+if (typeof window !== 'undefined') {
+  window.CONFIG = CONFIG;
+  console.log('MOLECULAI Configuration:', {
+    mode: CONFIG.USE_EMBEDDED_DATA ? 'Static (Embedded Data)' : 'Full-Stack (API)',
+    apiUrl: CONFIG.API_BASE_URL,
+    authEnabled: CONFIG.ENABLE_AUTH
+  });
+}
+

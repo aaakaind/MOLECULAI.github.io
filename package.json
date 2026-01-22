@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "build": "echo 'Build completed - static files ready for deployment'",
+    "vercel-build": "echo 'Vercel build - static files in public directory'",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "lint": "echo 'Linting not configured yet'",
