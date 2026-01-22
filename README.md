@@ -1,6 +1,14 @@
 # MOLECULAI
 
-> **Enterprise-Grade Molecular Visualization and Reaction-Engineering Platform**
+[![Deploy to GitHub Pages](https://github.com/aaakaind/MOLECULAI.github.io/workflows/Deploy%20static%20content%20to%20Pages/badge.svg)](https://github.com/aaakaind/MOLECULAI.github.io/actions)
+
+## 🌐 Live Demo
+
+**GitHub Pages (Static Version):** [https://aaakaind.github.io/MOLECULAI.github.io/](https://aaakaind.github.io/MOLECULAI.github.io/)
+
+The static version includes all visualization features with embedded molecule data. Authentication features require the full-stack deployment.
+
+## Features
 
 [![CI/CD](https://github.com/aaakaind/MOLECULAI/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/aaakaind/MOLECULAI/actions)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
@@ -404,37 +412,56 @@ SENTRY_DSN=your-sentry-dsn
 PROMETHEUS_URL=http://prometheus:9090
 ```
 
-## 🤝 Contributing
+## Deployment
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+### GitHub Pages (Static Deployment)
 
-**Quick start:**
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This repository is configured to automatically deploy to GitHub Pages. The static version uses embedded molecule data and includes all visualization features.
 
-## 📜 License
+**How it works:**
+- The `.github/workflows/static.yml` workflow automatically deploys the `/public` directory to GitHub Pages on every push to `main`
+- The app detects the deployment mode via `config.js` and uses embedded molecule data instead of backend API calls
+- Authentication features are disabled in the static deployment
 
-ISC License - see [LICENSE](LICENSE) file for details.
+**To enable GitHub Pages:**
+1. Go to your repository Settings → Pages
+2. Under "Build and deployment", select "GitHub Actions" as the source
+3. Push to the `main` branch to trigger the deployment
+4. Your site will be available at `https://<username>.github.io/<repository-name>/`
 
-## 🙏 Acknowledgments
+### Full-Stack Deployment
 
-- [Three.js](https://threejs.org/) for 3D rendering
-- [Yjs](https://github.com/yjs/yjs) for CRDT implementation
-- [RDKit](https://www.rdkit.org/) for cheminformatics
-- [RCSB PDB](https://www.rcsb.org/) for molecular structures
-- [PubChem](https://pubchem.ncbi.nlm.nih.gov/) for chemical data
+For the complete application with authentication and backend features:
 
-## 📞 Support
+1. Deploy the backend to a Node.js hosting service (e.g., Render, Railway, Vercel)
+2. Set the `JWT_SECRET` environment variable
+3. Update `public/js/config.js`:
+   ```javascript
+   const CONFIG = {
+     USE_EMBEDDED_DATA: false,
+     API_BASE_URL: 'https://your-backend-url.com',
+     ENABLE_AUTH: true
+   };
+   ```
 
-- 📧 Email: support@moleculai.example.com
-- 💬 Discord: [Join our community](https://discord.gg/moleculai)
-- 🐛 Issues: [GitHub Issues](https://github.com/aaakaind/MOLECULAI/issues)
-- 📚 Docs: [Documentation](https://docs.moleculai.example.com)
+### Configuration
 
-## 🗺️ Roadmap
+Edit `public/js/config.js` to customize the deployment:
+
+```javascript
+const CONFIG = {
+  // Use embedded data (true) or backend API (false)
+  USE_EMBEDDED_DATA: true,
+  
+  // Backend API URL (only used when USE_EMBEDDED_DATA is false)
+  API_BASE_URL: window.location.origin,
+  
+  // Enable authentication features (requires backend)
+  ENABLE_AUTH: false
+};
+```
+
+## License
 
 - [ ] VR/AR support for immersive visualization
 - [ ] AI-powered property prediction

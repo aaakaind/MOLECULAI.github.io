@@ -9,8 +9,18 @@ class MoleculAI {
         this.spinInterval = null;
         this.elementVisibility = {};
         this.currentStyle = 'stick';
+        
+        // Configuration
+        const hasConfig = typeof CONFIG !== 'undefined';
+        this.useEmbeddedData = hasConfig && CONFIG.USE_EMBEDDED_DATA;
+        this.enableAuth = hasConfig && CONFIG.ENABLE_AUTH;
 
         this.init();
+    }
+    
+    // Helper method to check if embedded data mode is available
+    isEmbeddedModeAvailable() {
+        return this.useEmbeddedData && typeof MoleculesAPI !== 'undefined';
     }
 
     async init() {
@@ -18,6 +28,14 @@ class MoleculAI {
         this.setupEventListeners();
         this.updateAuthUI();
         await this.loadMolecules();
+        
+        // Hide auth section if auth is disabled
+        if (!this.enableAuth) {
+            const authSection = document.getElementById('auth-section');
+            if (authSection) {
+                authSection.style.display = 'none';
+            }
+        }
     }
 
     setupViewer() {
@@ -93,6 +111,11 @@ class MoleculAI {
     }
 
     async login() {
+        if (!this.enableAuth) {
+            alert('Authentication is disabled in this deployment');
+            return;
+        }
+
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
@@ -128,6 +151,11 @@ class MoleculAI {
     }
 
     async register() {
+        if (!this.enableAuth) {
+            alert('Authentication is disabled in this deployment');
+            return;
+        }
+
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
@@ -174,8 +202,16 @@ class MoleculAI {
 
     async loadMolecules() {
         try {
-            const response = await fetch('/api/molecules');
-            const molecules = await response.json();
+            let molecules;
+            
+            if (this.isEmbeddedModeAvailable()) {
+                // Use embedded data for GitHub Pages
+                molecules = MoleculesAPI.getAllMolecules();
+            } else {
+                // Use backend API
+                const response = await fetch('/api/molecules');
+                molecules = await response.json();
+            }
 
             const select = document.getElementById('molecule-select');
             select.innerHTML = '<option value="">Select a molecule...</option>';
@@ -194,8 +230,16 @@ class MoleculAI {
 
     async loadMolecule(id) {
         try {
-            const response = await fetch(`/api/molecules/${id}`);
-            const molecule = await response.json();
+            let molecule;
+            
+            if (this.isEmbeddedModeAvailable()) {
+                // Use embedded data for GitHub Pages
+                molecule = MoleculesAPI.getMolecule(id);
+            } else {
+                // Use backend API
+                const response = await fetch(`/api/molecules/${id}`);
+                molecule = await response.json();
+            }
 
             this.currentMolecule = molecule;
             this.renderMolecule(molecule);
@@ -231,8 +275,16 @@ class MoleculAI {
 
     async loadElementControls(moleculeId) {
         try {
-            const response = await fetch(`/api/molecules/${moleculeId}/elements`);
-            const elements = await response.json();
+            let elements;
+            
+            if (this.isEmbeddedModeAvailable()) {
+                // Use embedded data for GitHub Pages
+                elements = MoleculesAPI.getElementsInMolecule(moleculeId);
+            } else {
+                // Use backend API
+                const response = await fetch(`/api/molecules/${moleculeId}/elements`);
+                elements = await response.json();
+            }
 
             const container = document.getElementById('element-controls');
             container.innerHTML = '';
