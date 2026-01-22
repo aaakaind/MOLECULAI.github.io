@@ -17,3 +17,6 @@ const CONFIG = {
   // Enable authentication features (requires backend)
   ENABLE_AUTH: false
 };
+
+// Expose configuration globally for other scripts to consume
+window.CONFIG = CONFIG;
