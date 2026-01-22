@@ -412,56 +412,73 @@ SENTRY_DSN=your-sentry-dsn
 PROMETHEUS_URL=http://prometheus:9090
 ```
 
-## Deployment
+## 🚀 Deployment
 
-### GitHub Pages (Static Deployment)
+MOLECULAI supports multiple deployment options for different use cases:
 
-This repository is configured to automatically deploy to GitHub Pages. The static version uses embedded molecule data and includes all visualization features.
+### Recommended: Vercel (Full-Stack)
 
-**How it works:**
-- The `.github/workflows/static.yml` workflow automatically deploys the `/public` directory to GitHub Pages on every push to `main`
-- The app detects the deployment mode via `config.js` and uses embedded molecule data instead of backend API calls
-- Authentication features are disabled in the static deployment
+Deploy the complete application with all features in minutes:
 
-**To enable GitHub Pages:**
-1. Go to your repository Settings → Pages
-2. Under "Build and deployment", select "GitHub Actions" as the source
-3. Push to the `main` branch to trigger the deployment
-4. Your site will be available at `https://<username>.github.io/<repository-name>/`
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aaakaind/MOLECULAI.github.io)
 
-### Full-Stack Deployment
+**Features:**
+- ✅ Zero-config deployment
+- ✅ Serverless API functions
+- ✅ Authentication & user accounts
+- ✅ Save/load visualizations
+- ✅ Automatic HTTPS & CDN
+- ✅ Free tier available
 
-For the complete application with authentication and backend features:
+**Quick start:**
+1. Click the "Deploy with Vercel" button above
+2. Connect your GitHub account
+3. Set `JWT_SECRET` environment variable
+4. Deploy!
 
-1. Deploy the backend to a Node.js hosting service (e.g., Render, Railway, Vercel)
-2. Set the `JWT_SECRET` environment variable
-3. Update `public/js/config.js`:
-   ```javascript
-   const CONFIG = {
-     USE_EMBEDDED_DATA: false,
-     API_BASE_URL: 'https://your-backend-url.com',
-     ENABLE_AUTH: true
-   };
-   ```
+### Alternative: GitHub Pages (Static Demo)
 
-### Configuration
+Already configured for automatic deployment:
+- 🌐 **Live at**: [https://aaakaind.github.io/MOLECULAI.github.io/](https://aaakaind.github.io/MOLECULAI.github.io/)
+- 📝 Uses embedded molecule data
+- ⚡ Instant updates on push to `main`
+- ❌ No backend features (auth, saving)
 
-Edit `public/js/config.js` to customize the deployment:
+### Detailed Deployment Guide
+
+For comprehensive deployment instructions including:
+- Step-by-step Vercel setup
+- Cloudflare Pages configuration
+- Environment variables
+- Troubleshooting
+- Performance tips
+
+**See**: [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### Quick Configuration
+
+The app automatically detects the deployment platform. For manual configuration, edit `public/js/config.js`:
 
 ```javascript
 const CONFIG = {
-  // Use embedded data (true) or backend API (false)
-  USE_EMBEDDED_DATA: true,
+  // Auto-detects: true for GitHub Pages, false for Vercel
+  USE_EMBEDDED_DATA: window.location.hostname.includes('github.io'),
   
-  // Backend API URL (only used when USE_EMBEDDED_DATA is false)
+  // Automatically uses current origin
   API_BASE_URL: window.location.origin,
   
-  // Enable authentication features (requires backend)
-  ENABLE_AUTH: false
+  // Auto-enabled for Vercel, disabled for GitHub Pages
+  ENABLE_AUTH: !window.location.hostname.includes('github.io')
 };
 ```
 
+---
+
 ## License
+
+ISC
+
+## Future Roadmap
 
 - [ ] VR/AR support for immersive visualization
 - [ ] AI-powered property prediction

@@ -1,0 +1,17 @@
+node_modules
+.git
+.github
+*.log
+.env
+.env.local
+coverage
+tests
+examples
+infrastructure
+docs
+CONTRIBUTING.md
+*.md
+!README.md
+client/src
+client/node_modules
+services
