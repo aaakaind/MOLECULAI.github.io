@@ -111,9 +111,11 @@ try {
     'package.json has required dependencies',
     () => {
       const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
-      return deps.express && deps.bcryptjs && deps.jsonwebtoken;
+      // Note: Express is used by server.js but not required for Vercel serverless functions
+      // Vercel functions use their own handler pattern
+      return deps.bcryptjs && deps.jsonwebtoken;
     },
-    'Install required dependencies: express, bcryptjs, jsonwebtoken'
+    'Install required dependencies: bcryptjs, jsonwebtoken'
   );
 
   check(

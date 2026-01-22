@@ -1,8 +1,10 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-// In-memory user storage (in production, use a proper database)
-// This will reset on each cold start in serverless environment
+// WARNING: In-memory storage is for DEMO purposes only
+// In serverless environments, data will NOT persist across function invocations
+// For production, replace with a database (e.g., PostgreSQL, MongoDB, Redis)
+// Each Vercel function cold start will reset this Map
 const users = new Map();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
@@ -10,6 +12,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-productio
 /**
  * User registration endpoint
  * POST /api/register
+ * 
+ * NOTE: This implementation uses in-memory storage which does NOT persist
+ * in serverless environments. User data will be lost on function cold starts.
+ * For production use, integrate a database.
  */
 export default async function handler(req, res) {
   // Enable CORS

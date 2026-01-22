@@ -88,6 +88,23 @@ The repository includes `vercel.json` which configures:
 - ✅ All API endpoints
 - ✅ Real-time molecule data
 
+### ⚠️ Important Limitations
+
+**Demo Authentication System:**
+The current implementation uses in-memory storage for user accounts and visualizations. This means:
+- User accounts and saved data do NOT persist across serverless function cold starts
+- Data will be lost when the function scales down or restarts
+- This is intended for DEMO and TESTING purposes only
+
+**For Production Use:**
+To enable persistent data storage, you need to integrate a database:
+- **PostgreSQL** - Recommended for relational data
+- **MongoDB** - Good for document storage
+- **Redis** - Fast key-value store
+- **Vercel KV** - Built-in key-value storage
+
+See [Database Integration Guide](#database-integration) below for details.
+
 ---
 
 ## GitHub Pages (Static Only)
@@ -245,6 +262,117 @@ curl https://your-deployment-url.vercel.app/api/molecules
 ```
 
 Should return an array of molecule objects.
+
+---
+
+## Database Integration
+
+The demo deployment uses in-memory storage which does not persist in serverless environments. For production use with persistent data, integrate a database.
+
+### Option 1: Vercel Postgres (Easiest)
+
+Vercel provides built-in PostgreSQL databases:
+
+1. **Go to your Vercel project dashboard**
+2. **Navigate to Storage tab**
+3. **Click "Create Database" → Postgres**
+4. **Connect to your project**
+
+Vercel automatically adds environment variables:
+- `POSTGRES_URL`
+- `POSTGRES_PRISMA_URL`
+- `POSTGRES_URL_NON_POOLING`
+
+5. **Update API routes** to use PostgreSQL instead of Map storage
+
+Example using `pg` library:
+```javascript
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+// Replace Map with database queries
+const users = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+```
+
+### Option 2: Vercel KV (Redis)
+
+For simple key-value storage:
+
+1. **Go to your Vercel project dashboard**
+2. **Navigate to Storage tab**
+3. **Click "Create Database" → KV (Redis)**
+4. **Install Vercel KV SDK:**
+   ```bash
+   npm install @vercel/kv
+   ```
+
+5. **Update API routes:**
+   ```javascript
+   import { kv } from '@vercel/kv';
+   
+   // Store user
+   await kv.set(`user:${username}`, userData);
+   
+   // Retrieve user
+   const user = await kv.get(`user:${username}`);
+   ```
+
+### Option 3: External Database
+
+Connect to any external database:
+
+**PostgreSQL (Supabase, Neon, Railway):**
+```bash
+# Add to Vercel environment variables
+POSTGRES_URL=postgresql://user:password@host:5432/database
+```
+
+**MongoDB (MongoDB Atlas):**
+```bash
+# Add to Vercel environment variables
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/database
+```
+
+**Redis (Upstash, Redis Cloud):**
+```bash
+# Add to Vercel environment variables
+REDIS_URL=redis://default:password@host:port
+```
+
+### Migration Steps
+
+1. **Choose a database** from options above
+2. **Create database schema** for users, visualizations
+3. **Update API routes** to replace Map with database calls
+4. **Add database connection string** to Vercel environment variables
+5. **Test thoroughly** before production use
+6. **Add error handling** for database connection issues
+
+### Database Schema Example
+
+```sql
+-- Users table
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Visualizations table
+CREATE TABLE visualizations (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  name VARCHAR(255) NOT NULL,
+  molecule_id VARCHAR(255) NOT NULL,
+  settings JSONB,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
 ---
 

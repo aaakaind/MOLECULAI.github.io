@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 
-// In-memory visualization storage
+// WARNING: In-memory storage is for DEMO purposes only
+// In serverless environments, data will NOT persist across function invocations
+// Saved visualizations will be lost on cold starts
+// For production, replace with a database (e.g., PostgreSQL, MongoDB, Redis)
 const savedVisualizations = new Map();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';
@@ -21,6 +24,10 @@ function authenticateToken(token) {
  * GET /api/visualizations - Get user's visualizations
  * POST /api/visualizations - Save a new visualization
  * DELETE /api/visualizations?id=xxx - Delete a visualization
+ * 
+ * NOTE: This implementation uses in-memory storage which does NOT persist
+ * in serverless environments. Data will be lost on function cold starts.
+ * For production use, integrate a database.
  */
 export default function handler(req, res) {
   // Enable CORS
