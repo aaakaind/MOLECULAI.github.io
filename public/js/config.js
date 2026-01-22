@@ -14,7 +14,8 @@
 const CONFIG = {
   // Set to true to use embedded molecule data (for GitHub Pages static deployment)
   // Set to false to use backend API (for full-stack deployment like Vercel)
-  USE_EMBEDDED_DATA: typeof window !== 'undefined' && window.location.hostname.includes('github.io'),
+  // Secure check: hostname must END with .github.io (not just contain it)
+  USE_EMBEDDED_DATA: typeof window !== 'undefined' && window.location.hostname.endsWith('.github.io'),
   
   // API base URL (only used when USE_EMBEDDED_DATA is false)
   // Automatically detects if running on Vercel or locally
@@ -25,7 +26,7 @@ const CONFIG = {
   
   // Enable authentication features (requires backend)
   // Enabled for Vercel deployments, disabled for GitHub Pages
-  ENABLE_AUTH: typeof window !== 'undefined' && !window.location.hostname.includes('github.io')
+  ENABLE_AUTH: typeof window !== 'undefined' && !window.location.hostname.endsWith('.github.io')
 };
 
 // Expose configuration globally for other scripts to consume
